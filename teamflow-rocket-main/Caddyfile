@@ -1,0 +1,21 @@
+:80 {
+	root * /app/dist
+	encode gzip
+
+	# Cache hashed assets (JS/CSS bundles with content hashes) for 1 year
+	@assets {
+		path /assets/*
+	}
+	header @assets Cache-Control "public, max-age=31536000, immutable"
+
+	# Cache static files in /public (favicon, robots.txt, etc.) for 1 hour
+	@static {
+		path /favicon.ico /robots.txt /placeholder.svg
+	}
+	header @static Cache-Control "public, max-age=3600"
+
+	# Rewrite all non-file requests to index.html for SPA client-side routing
+	try_files {path} /index.html
+
+	file_server
+}
